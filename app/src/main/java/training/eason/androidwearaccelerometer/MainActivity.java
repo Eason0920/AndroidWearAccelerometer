@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +23,8 @@ public class MainActivity extends WearableActivity {
 
     @BindView(R.id.accEventButton)
     Button mAccEventButton;
+    @BindView(R.id.accSeconds)
+    TextView mAccSeconds;
     @BindView(R.id.accXTextView)
     TextView mAccXTextView;
     @BindView(R.id.accYTextView)
@@ -34,6 +37,7 @@ public class MainActivity extends WearableActivity {
     private Sensor mSensor;
     private Unbinder mUnbinder;
     private int mCurrentStatus = 0;
+    private long mPrevTimestamp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,7 @@ public class MainActivity extends WearableActivity {
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         // Enables Always-on
-//        setAmbientEnabled();
+        setAmbientEnabled();
     }
 
 //    @Override
@@ -78,6 +82,12 @@ public class MainActivity extends WearableActivity {
                 @Override
                 public void onSensorChanged(SensorEvent sensorEvent) {
                     if (sensorEvent.accuracy != SensorManager.SENSOR_STATUS_UNRELIABLE) {
+                        if(mPrevTimestamp > 0){
+                            final long t = sensorEvent.timestamp - mPrevTimestamp;
+                            mAccSeconds.setText(String.format("Seconds: %s", TimeUnit.MILLISECONDS.toSeconds(t)));
+                        }
+
+                        mPrevTimestamp = sensorEvent.timestamp;
                         mAccXTextView.setText(String.format(Locale.getDefault(), "X: %f", sensorEvent.values[0]));
                         mAccYTextView.setText(String.format(Locale.getDefault(), "Y: %f", sensorEvent.values[1]));
                         mAccZTextView.setText(String.format(Locale.getDefault(), "Z: %f", sensorEvent.values[2]));

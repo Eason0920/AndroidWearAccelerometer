@@ -23,8 +23,8 @@ public class MainActivity extends WearableActivity {
 
     @BindView(R.id.accEventButton)
     Button mAccEventButton;
-    @BindView(R.id.accSeconds)
-    TextView mAccSeconds;
+    @BindView(R.id.accSamplingRateTextView)
+    TextView mAccSamplingRate;
     @BindView(R.id.accXTextView)
     TextView mAccXTextView;
     @BindView(R.id.accYTextView)
@@ -37,7 +37,7 @@ public class MainActivity extends WearableActivity {
     private Sensor mSensor;
     private Unbinder mUnbinder;
     private int mCurrentStatus = 0;
-    private long mPrevTimestamp = 0;
+    private long mPrevMillis = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,17 +80,16 @@ public class MainActivity extends WearableActivity {
             mSensorEventListener = new SensorEventListener() {
 
                 @Override
-                public void onSensorChanged(SensorEvent sensorEvent) {
+                public void onSensorChanged(final SensorEvent sensorEvent) {
                     if (sensorEvent.accuracy != SensorManager.SENSOR_STATUS_UNRELIABLE) {
-                        if(mPrevTimestamp > 0){
-                            final long t = sensorEvent.timestamp - mPrevTimestamp;
-                            mAccSeconds.setText(String.format("Seconds: %s", TimeUnit.MILLISECONDS.toSeconds(t)));
-                        }
+                        final long nowMillis = TimeUnit.MILLISECONDS.convert(sensorEvent.timestamp, TimeUnit.NANOSECONDS);
+                        final long diffMillis = (nowMillis - mPrevMillis);
+                        mPrevMillis = nowMillis;
 
-                        mPrevTimestamp = sensorEvent.timestamp;
-                        mAccXTextView.setText(String.format(Locale.getDefault(), "X: %f", sensorEvent.values[0]));
-                        mAccYTextView.setText(String.format(Locale.getDefault(), "Y: %f", sensorEvent.values[1]));
-                        mAccZTextView.setText(String.format(Locale.getDefault(), "Z: %f", sensorEvent.values[2]));
+                        mAccSamplingRate.setText(String.format("Sampling rate per second: %s", (1000 / diffMillis)));
+                        mAccXTextView.setText(String.format(Locale.getDefault(), "X: %s", sensorEvent.values[0]));
+                        mAccYTextView.setText(String.format(Locale.getDefault(), "Y: %s", sensorEvent.values[1]));
+                        mAccZTextView.setText(String.format(Locale.getDefault(), "Z: %s", sensorEvent.values[2]));
                     }
                 }
 

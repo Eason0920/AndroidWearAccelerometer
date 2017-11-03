@@ -9,88 +9,84 @@
     tools:context="training.eason.androidwearaccelerometer.MainActivity"
     tools:deviceIds="wear">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:padding="@dimen/inner_frame_layout_padding"
         app:boxedEdges="all">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <RadioGroup
+                android:id="@+id/accDelayChoiceRadioGroup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RadioGroup
-                        android:id="@+id/accDelayChoiceRadioGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="FASTEST" />
-
-                        <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="NORMAL" />
-
-                        <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="GAME" />
-
-                        <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="UI" />
-
-                    </RadioGroup>
-
-                </HorizontalScrollView>
-
-                <Button
-                    android:id="@+id/accEventButton"
+                <RadioButton
+                    android:id="@+id/accDelayChoiceFastestRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="開始" />
+                    android:tag="0"
+                    android:text="FASTEST" />
 
-                <TextView
-                    android:id="@+id/accSamplingRateTextView"
+                <RadioButton
+                    android:id="@+id/accDelayChoiceGameRadioButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:tag="1"
+                    android:text="GAME" />
 
-                <TextView
-                    android:id="@+id/accXTextView"
+                <RadioButton
+                    android:id="@+id/accDelayChoiceUiRadioButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:tag="2"
+                    android:text="UI" />
 
-                <TextView
-                    android:id="@+id/accYTextView"
+                <RadioButton
+                    android:id="@+id/accDelayChoiceNormalRadioButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:tag="3"
+                    android:text="NORMAL" />
 
-                <TextView
-                    android:id="@+id/accZTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+            </RadioGroup>
 
-            </LinearLayout>
+            <Button
+                android:id="@+id/accEventButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="開始" />
 
-        </ScrollView>
+            <TextView
+                android:id="@+id/accSamplingRateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/accXTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/accYTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/accZTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </android.support.wear.widget.BoxInsetLayout>
 

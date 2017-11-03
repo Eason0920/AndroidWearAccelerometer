@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -21,6 +23,16 @@ import butterknife.Unbinder;
 
 public class MainActivity extends WearableActivity {
 
+    @BindView(R.id.accDelayChoiceRadioGroup)
+    RadioGroup mAccDelayChoiceRadioGroup;
+//    @BindView(R.id.accDelayChoiceFastestRadioButton)
+//    RadioButton mAccDelayChoiceFastestRadioButton;
+//    @BindView(R.id.accDelayChoiceNormalRadioButton)
+//    RadioButton mAccDelayChoiceNormalRadioButton;
+//    @BindView(R.id.accDelayChoiceGameRadioButton)
+//    RadioButton mAccDelayChoiceGameRadioButton;
+//    @BindView(R.id.accDelayChoiceUiRadioButton)
+//    RadioButton mAccDelayChoiceUiRadioButton;
     @BindView(R.id.accEventButton)
     Button mAccEventButton;
     @BindView(R.id.accSamplingRateTextView)
@@ -38,6 +50,7 @@ public class MainActivity extends WearableActivity {
     private Unbinder mUnbinder;
     private int mCurrentStatus = 0;
     private long mPrevMillis = 0;
+    private Integer mCurrentDelayMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +62,32 @@ public class MainActivity extends WearableActivity {
         assert mSensorManager != null;
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        mAccDelayChoiceRadioGroup.check(R.id.accDelayChoiceFastestRadioButton);
+        mAccDelayChoiceRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                final RadioButton checkRadioButton = findViewById(id);
+                mCurrentDelayMode = Integer.valueOf(checkRadioButton.getTag().toString());
+            }
+        });
+
         // Enables Always-on
         setAmbientEnabled();
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final RadioButton checkRadioButton = findViewById(mAccDelayChoiceRadioGroup.getCheckedRadioButtonId());
+        mCurrentDelayMode = Integer.valueOf(checkRadioButton.getTag().toString());
+    }
 
     @Override
     protected void onPause() {
         mAccEventButton.setText("開始");
         mSensorManager.unregisterListener(mSensorEventListener);
+        mAccDelayChoiceRadioGroup.setVisibility(View.VISIBLE);
         super.onPause();
     }
 
@@ -77,6 +102,7 @@ public class MainActivity extends WearableActivity {
         if (mCurrentStatus == 0) {
             mAccEventButton.setText("停止");
             mCurrentStatus = 1;
+            mAccDelayChoiceRadioGroup.setVisibility(View.GONE);
             mSensorEventListener = new SensorEventListener() {
 
                 @Override
@@ -100,11 +126,12 @@ public class MainActivity extends WearableActivity {
 
             };
 
-            mSensorManager.registerListener(mSensorEventListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(mSensorEventListener, mSensor, mCurrentDelayMode);
         } else {
             mSensorManager.unregisterListener(mSensorEventListener);
             mAccEventButton.setText("開始");
             mCurrentStatus = 0;
+            mAccDelayChoiceRadioGroup.setVisibility(View.VISIBLE);
         }
     }
 }
